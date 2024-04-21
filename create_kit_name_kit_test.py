@@ -27,7 +27,7 @@ def positive_assert(kit_name, auth_token):
     # Obtener el cuerpo de la solicitud y los encabezados actualizados
     kit_body, headers = get_kit_body(kit_name, auth_token)
     # El resultado de la solicitud para crear un nuevo kit se guarda en la variable kit_response
-    kit_response = sender_stand_request.post_new_client_kit(kit_body)
+    kit_response = sender_stand_request.post_new_client_kit(kit_body, headers)
 
     # Comprueba si el código de estado es 201
     assert kit_response.status_code == 201
@@ -36,7 +36,7 @@ def negative_assert_no_name(kit_name, auth_token):
     # Obtener el cuerpo de la solicitud y los encabezados actualizados
     kit_body, headers = get_kit_body(kit_name, auth_token)
     # El resultado se guarda en la variable kit_response
-    kit_response = sender_stand_request.post_new_client_kit(kit_body)
+    kit_response = sender_stand_request.post_new_client_kit(kit_body, headers)
     # Comprueba si el código de estado es 400
     assert kit_response.status_code == 400
     # Comprueba que el atributo code en el cuerpo de respuesta es 400
@@ -48,52 +48,52 @@ def negative_assert_symbol(kit_name, auth_token):
     # Obtener el cuerpo de la solicitud y los encabezados actualizados
     kit_body, headers = get_kit_body(kit_name, auth_token)
     # El resultado se guarda en la variable kit_response
-    kit_response = sender_stand_request.post_new_client_kit(kit_body)
+    kit_response = sender_stand_request.post_new_client_kit(kit_body,headers)
 
     # Comprueba si el código de estado es 400
     assert kit_response.status_code == 400
 
     # Comprueba que el atributo code en el cuerpo de respuesta es 400
-    assert kit.response.json()["code"] == 400
+    assert kit_response.json()["code"] == 400
     # Comprueba el atributo message en el cuerpo de respuesta
-    assert kit.response.json()["message"] == "El nombre que ingresaste es incorrecto. " \
+    assert kit_response.json()["message"] == "El nombre que ingresaste es incorrecto. " \
                                              "Los nombres solo pueden contener caracteres latinos,  "\
                                              "los nombres deben tener al menos 2 caracteres y no más de 15 caracteres"
 
 # Prueba 1.
-def test_1():
+def test_1_create_kit_1_letter_in_name_get_success_response():
     auth_token = get_new_user_token()
     positive_assert("a",auth_token)
 
 # Prueba 2.
-def test_2():
+def test_2_create_kit_511_letter_in_name_get_success_response():
     auth_token = get_new_user_token()
     positive_assert("AbcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdAbcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabC",auth_token)
 
-def test_3():
+def test_3_create_kit_0_letter_in_name_get_success_response():
     auth_token = get_new_user_token()
     negative_assert_no_name("",auth_token)
 
-def test_4():
+def test_4_create_kit_512_letter_in_name_get_success_response():
     auth_token = get_new_user_token()
-    negative_assert_no_name("AbcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdAbcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcD",auth_token)
+    negative_assert_symbol("AbcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdAbcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcD",auth_token)
 
-def test_5():
+def test_5_create_kit_has_special_symbol_in_name_get_success_response():
     auth_token = get_new_user_token()
     positive_assert("\"№%@\",",auth_token)
 
-def test_6():
+def test_6_create_kit_has_space_in_name_get_success_response():
     auth_token = get_new_user_token()
     positive_assert(" A Aaa ",auth_token)
 
-def test_7():
+def test_7_create_kit_has_number_in_name_get_success_response():
     auth_token = get_new_user_token()
     positive_assert("123",auth_token)
 
-def test_8():
+def test_8_create_kit_no_string_in_name_get_error_response():
     auth_token = get_new_user_token()
     negative_assert_symbol({},auth_token)
 
-def test_9():
+def test_9_create_kit_has_dic_in_name_get_error_response():
     auth_token = get_new_user_token()
     negative_assert_symbol( { "name": 123 },auth_token)
