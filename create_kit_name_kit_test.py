@@ -5,8 +5,6 @@ import data
 def get_kit_body(kit_name, auth_token):
     # Crear una copia de los encabezados para no modificar el original
     headers_copy = data.headers.copy()
-    # Añadir el token de autenticación al encabezado 'Authorization'
-    headers_copy['Authorization'] = f'Bearer {auth_token}'
     # Copiar el diccionario con el cuerpo de la solicitud desde el archivo de datos
     current_kit_body = data.kit_name.copy()
     # Se cambia el valor del parámetro name
@@ -31,6 +29,8 @@ def positive_assert(kit_name, auth_token):
 
     # Comprueba si el código de estado es 201
     assert kit_response.status_code == 201
+    # Verificar que el campo 'name' en la respuesta coincide con el enviado
+    assert kit_response.json()["name"] == kit_name
 
 def negative_assert_no_name(kit_name, auth_token):
     # Obtener el cuerpo de la solicitud y los encabezados actualizados
