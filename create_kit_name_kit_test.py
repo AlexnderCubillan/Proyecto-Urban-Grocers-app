@@ -36,7 +36,7 @@ def negative_assert_no_name(kit_name, auth_token):
     # Obtener el cuerpo de la solicitud y los encabezados actualizados
     kit_body, headers = get_kit_body(kit_name, auth_token)
     # El resultado se guarda en la variable kit_response
-    kit_response = sender_stand_request.post_new_client_kit(kit_body, headers)
+    kit_response = sender_stand_request.post_new_client_kit(kit_body, auth_token)
     # Comprueba si el código de estado es 400
     assert kit_response.status_code == 400
     # Comprueba que el atributo code en el cuerpo de respuesta es 400
@@ -48,7 +48,7 @@ def negative_assert_symbol(kit_name, auth_token):
     # Obtener el cuerpo de la solicitud y los encabezados actualizados
     kit_body, headers = get_kit_body(kit_name, auth_token)
     # El resultado se guarda en la variable kit_response
-    kit_response = sender_stand_request.post_new_client_kit(kit_body,headers)
+    kit_response = sender_stand_request.post_new_client_kit(kit_body,auth_token)
 
     # Comprueba si el código de estado es 400
     assert kit_response.status_code == 400
